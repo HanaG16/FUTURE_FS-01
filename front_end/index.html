@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<!-- LOADING SCREEN -->
+<div id="loader">
+    <div class="loader-content">
+        <i class="fa-solid fa-code"></i>
+        <p>Loading...</p>
+    </div>
+</div>
+    <!-- NAVIGATION -->
+<nav>
+    <div class="logo"><i class="fa-solid fa-code"></i> MyPortfolio</div>
+    <ul>
+        <li><a href="#about"><i class="fa-solid fa-user"></i> About</a></li>
+        <li><a href="#projects"><i class="fa-solid fa-diagram-project"></i> Projects</a></li>
+        <li><a href="#glimpse"><i class="fa-solid fa-camera"></i> Glimpse</a></li>
+        <li><a href="#contact"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        
+    </ul>
+</nav>
+ 
+<!-- HERO SECTION -->
+<section id="hero">
+    <h1>Hey there, I'm <span class="highlight">Hana</span></h1>
+    <p><i class="fa-solid fa-location-dot"></i> Addis Ababa &nbsp;|&nbsp;
+       <i class="fa-solid fa-laptop-code"></i> Beginner Developer</p>
+    <a href="#projects" class="btn"><i class="fa-solid fa-rocket"></i> See My Work</a>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+    <h2><i class="fa-solid fa-user"></i> About Me</h2>
+    <p>I am from Addis Ababa, Ethiopia. I am a mechanical engineer student. I like watching F1 and boxing. I also love drawing and meeting new people.Talking about my goal, I want to paly a great role in the automobile industry; upleveling it in my country. </p>
+    <div class="about-icons">
+        <span><i class="fa-solid fa-gear"></i>My skills</span><p>
+
+        <span><i class="fa-brands fa-html5"></i> HTML(beginner)</span>
+        <span><i class="fa-brands fa-css3-alt"></i> CSS(beginner)</span>
+        <span><i class="fa-brands fa-js"></i> JavaScript(beginner)</span>
+        <span><i class="fa-brands fa-node-js"></i> Node.js(beginner)</span>
+        <span><i class="fa-brands fa-python"></i>python(intermeidate)</span>
+    </div>
+</section>
+
+<!-- PROJECTS SECTION -->
+<section id="projects">
+    <h2><i class="fa-solid fa-diagram-project"></i> My Projects</h2>
+    <div class="projects-grid" id="projects-container"></div>
+</section>
+<!-- PROJECT MODAL -->
+<div class="project-modal" id="project-modal">
+    <div class="modal-box">
+        <button class="modal-close" id="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+       <div id="modal-media"></div> 
+        <div class="modal-body">
+            <h3 id="modal-title"></h3>
+            <p class="modal-tech" id="modal-tech"></p>
+            <p class="modal-desc" id="modal-desc"></p>
+            <a class="modal-link btn" id="modal-link" href="#" target="_blank">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> View Project
+            </a>
+        </div>
+    </div>
+</div>
+ <!-- GLIMPSE SECTION -->
+<section id="glimpse">
+    <h2><i class="fa-solid fa-camera"></i> Glimpse of My Life</h2>
+    <p>A few moments from my everyday life.</p>
+
+    <div class="flashcard-wrapper">
+        <button class="fc-arrow left" id="fc-prev"><i class="fa-solid fa-chevron-left"></i></button>
+
+        <div class="flashcard-track-container">
+            <div class="flashcard-track" id="fc-track">
+                <div class="flashcard"><img src="images/glimpse/photo1.jpg"  alt="Moment 1"><div class="flashcard-caption">sunset gazing with my family</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo2.jpg" alt="Moment 2"><div class="flashcard-caption">exploring with my friends</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo3.jpg" alt="Moment 3"><div class="flashcard-caption">accidentally looking up:)</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo4.jpg" alt="Moment 4"><div class="flashcard-caption">the sunset at my hometown</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo5.jpg" alt="Moment 5"><div class="flashcard-caption">"Timket" with my mom</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo6.jpg" alt="Moment 6"><div class="flashcard-caption">alone with light off</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo7.jpg" alt="Moment 7"><div class="flashcard-caption">"zeker" with my friends</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo8.jpg" alt="Moment 8"><div class="flashcard-caption">Going church after a whole day work </div></div>
+                <div class="flashcard"><img src="images/glimpse/photo9.jpg" alt="Moment 9"><div class="flashcard-caption">a rondom day thought</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo10.jpg" alt="Moment 10"><div class="flashcard-caption">light went out in my "Begena" class</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo11.jpg" alt="Moment 11"><div class="flashcard-caption">"Good Friday" with my family</div></div>
+                <div class="flashcard"><img src="images/glimpse/photo12.jpg" alt="Moment 12"><div class="flashcard-caption">night walk </div></div>
+                <div class="flashcard"><img src="images/glimpse/photo13.jpg" alt="Moment 13"><div class="flashcard-caption">the lonely home at the boundary of different world</div></div>
+            </div>
+        </div>
+
+        <button class="fc-arrow right" id="fc-next"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="fc-dots" id="fc-dots"></div>
+    </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <p class="lightbox-caption" id="lightbox-caption"></p>
+</div>
+<!-- CONTACT SECTION -->
+<section id="contact">
+    <h2><i class="fa-solid fa-envelope"></i> Contact Me</h2>
+    <form id="contact-form">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" placeholder="Your Message" required></textarea>
+        <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+    </form>
+    <p id="form-message"></p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>
+        <a href="https://github.com/HanaG16"><i class="fa-brands fa-github"></i></a>
+        <a href="https://linkedin.com/in/hana-g-331970254"><i class="fa-brands fa-linkedin"></i></a>
+    </p>
+        <p>Made by Hana Getu &copy; 2026</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+   <!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <p class="lightbox-caption" id="lightbox-caption"></p>
+    <div class="lightbox-controls">
+        <button id="prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="lightbox-counter" id="lightbox-counter">1 / 13</span>
+        <button id="next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+</div>
+</body>
+</html>
