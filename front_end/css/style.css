@@ -648,3 +648,246 @@ nav ul li a.active {
     width: 100vw;
     height: 100vh;
 }
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    /* NAVIGATION */
+    nav {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    nav ul {
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    nav ul li a {
+        font-size: 13px;
+    }
+
+    /* HERO */
+    #hero h1 {
+        font-size: 32px;
+    }
+
+    #hero p {
+        font-size: 15px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    /* SECTIONS */
+    section {
+        padding: 50px 20px;
+    }
+
+    section h2 {
+        font-size: 26px;
+    }
+
+    /* ABOUT ICONS */
+    .about-icons {
+        gap: 10px;
+    }
+
+    .about-icons span {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    /* PROJECTS GRID */
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* FLASHCARD */
+    .flashcard {
+        min-width: 150px;
+        height: 200px;
+    }
+
+    .fc-arrow.left  { left: -10px; }
+    .fc-arrow.right { right: -10px; }
+
+    /* GLIMPSE */
+    #glimpse {
+        padding: 50px 20px;
+    }
+
+    /* CONTACT FORM */
+    #contact-form {
+        width: 100%;
+    }
+
+    /* MODAL */
+    .modal-box {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .modal-img {
+        height: 180px;
+    }
+
+    /* FOOTER */
+    footer {
+        padding: 20px;
+        font-size: 12px;
+    }
+
+    footer a {
+        font-size: 18px;
+        margin: 0 8px;
+    }
+}
+
+/* EXTRA SMALL SCREENS (very small phones) */
+@media (max-width: 480px) {
+    #hero h1 {
+        font-size: 26px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    nav ul {
+        gap: 10px;
+    }
+
+    nav ul li a {
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 10px 22px;
+        font-size: 14px;
+    }
+
+    .flashcard {
+        min-width: 130px;
+        height: 170px;
+    }
+}
+/* ===== TABLET (768px - 1024px) ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    /* NAVIGATION */
+    nav {
+        padding: 15px 30px;
+    }
+
+    nav ul {
+        gap: 20px;
+    }
+
+    /* HERO */
+    #hero h1 {
+        font-size: 42px;
+    }
+
+    #hero p {
+        font-size: 17px;
+    }
+
+    /* SECTIONS */
+    section {
+        padding: 60px 30px;
+    }
+
+    section h2 {
+        font-size: 30px;
+    }
+
+    /* PROJECTS GRID */
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* FLASHCARD */
+    .flashcard {
+        min-width: 180px;
+        height: 230px;
+    }
+
+    /* MODAL */
+    .modal-box {
+        width: 85%;
+    }
+
+    /* ABOUT ICONS */
+    .about-icons {
+        gap: 12px;
+    }
+
+    /* CONTACT FORM */
+    #contact-form {
+        max-width: 100%;
+    }
+
+    /* GLIMPSE */
+    #glimpse {
+        padding: 60px 30px;
+    }
+
+    .fc-arrow.left  { left: -12px; }
+    .fc-arrow.right { right: -12px; }
+}
+
+/* ===== LARGE SCREENS (1440px+) ===== */
+@media (min-width: 1440px) {
+
+    /* Make content wider on big screens */
+    section {
+        max-width: 1300px;
+    }
+
+    #hero h1 {
+        font-size: 68px;
+    }
+
+    #hero p {
+        font-size: 22px;
+    }
+
+    section h2 {
+        font-size: 40px;
+    }
+
+    /* PROJECTS GRID - 3 columns on large screens */
+    .projects-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* FLASHCARD bigger on large screens */
+    .flashcard {
+        min-width: 240px;
+        height: 300px;
+    }
+
+    nav {
+        padding: 20px 80px;
+    }
+
+    .logo {
+        font-size: 26px;
+    }
+}
+
+/* ===== ULTRA WIDE (2560px+) ===== */
+@media (min-width: 2560px) {
+    section {
+        max-width: 1800px;
+    }
+
+    #hero h1 {
+        font-size: 80px;
+    }
+
+    .projects-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
