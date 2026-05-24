@@ -25,15 +25,15 @@ async function loadProjects() {
             const isVideo = project.image && (
                 project.image.endsWith('.mp4') ||
                 project.image.endsWith('.mov') ||
-                project.image.endsWith('.webm')
+                project.image.endsWith('.webm') ||
+                project.image.includes('drive.google.com')
             )
 
             const mediaHTML = project.image
                 ? isVideo
-                    ? `<video muted loop autoplay
-                        style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:14px;">
-                        <source src="${project.image}" type="video/mp4">
-                       </video>`
+                    ? `<iframe src="${project.image}"
+                        style="width:100%;height:160px;border-radius:8px;margin-bottom:14px;border:none;"
+                        allowfullscreen></iframe>`
                     : `<img src="${project.image}" alt="${project.title}"
                         style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:14px;"
                         onerror="this.style.display='none'">`
@@ -92,14 +92,16 @@ function openProjectModal(project) {
     if (project.image) {
         const isVideo = project.image.endsWith('.mp4') ||
                         project.image.endsWith('.mov') ||
-                        project.image.endsWith('.webm')
+                        project.image.endsWith('.webm') ||
+                        project.image.includes('drive.google.com')
 
         if (isVideo) {
             mediaContainer.innerHTML = `
-                <video controls autoplay muted loop
-                    style="width:100%;height:280px;object-fit:cover;display:block;">
-                    <source src="${project.image}" type="video/mp4">
-                </video>`
+                <iframe src="${project.image}"
+                    width="100%" height="280"
+                    frameborder="0" allowfullscreen
+                    style="display:block; border-radius:8px;">
+                </iframe>`
         } else {
             mediaContainer.innerHTML = `
                 <img src="${project.image}" alt="${project.title}"
