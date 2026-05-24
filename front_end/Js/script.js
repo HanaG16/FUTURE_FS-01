@@ -94,14 +94,15 @@ function openProjectModal(project) {
         const isVideo = project.image.endsWith('.mp4') ||
                         project.image.endsWith('.mov') ||
                         project.image.endsWith('.webm') ||
-                        project.image.includes('drive.google.com')
+                        project.image.includes('drive.google.com') ||
+                        project.image.includes('streamable.com')
 
         if (isVideo) {
             mediaContainer.innerHTML = `
                 <iframe src="${project.image}"
                     width="100%" height="280"
                     frameborder="0" allowfullscreen
-                    style="display:block; border-radius:8px;">
+                    style="display:block; border-radius:8px; border:none;">
                 </iframe>`
         } else {
             mediaContainer.innerHTML = `
