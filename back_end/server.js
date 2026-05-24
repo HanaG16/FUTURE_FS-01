@@ -10,20 +10,25 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// ===== DATABASE CONNECTION =====
-const db = mysql.createConnection({
+// ===== DATABASE CONNECTION POOL =====
+const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'portfolio_db',
-    port: process.env.DB_PORT || 3306
+    port: process.env.DB_PORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 })
 
-db.connect((err) => {
+// test connection
+pool.getConnection((err, connection) => {
     if (err) {
         console.log('❌ Database connection failed:', err)
     } else {
         console.log('✅ Connected to MySQL database!')
+        connection.release()
     }
 })
 
@@ -31,8 +36,7 @@ db.connect((err) => {
 
 // GET all projects
 app.get('/api/projects', (req, res) => {
-    const sql = 'SELECT * FROM projects'
-    db.query(sql, (err, results) => {
+    pool.query('SELECT * FROM projects', (err, results) => {
         if (err) {
             console.log('Database error:', err)
             res.status(500).json([])
@@ -49,8 +53,9 @@ app.post('/api/contact', (req, res) => {
         return res.status(400).json({ error: 'All fields are required' })
     }
     const sql = 'INSERT INTO messages (name, email, message) VALUES (?, ?, ?)'
-    db.query(sql, [name, email, message], (err, result) => {
+    pool.query(sql, [name, email, message], (err, result) => {
         if (err) {
+            console.log('Insert error:', err)
             res.status(500).json({ error: 'Failed to save message' })
         } else {
             res.json({ success: true, message: 'Message received!' })
