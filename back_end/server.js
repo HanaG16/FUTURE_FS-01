@@ -12,10 +12,11 @@ app.use(express.json())
 
 // ===== DATABASE CONNECTION =====
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'portfolio_db'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'portfolio_db',
+    port: process.env.DB_PORT || 3306
 })
 
 db.connect((err) => {
@@ -44,11 +45,9 @@ app.get('/api/projects', (req, res) => {
 // POST a contact message
 app.post('/api/contact', (req, res) => {
     const { name, email, message } = req.body
-
     if (!name || !email || !message) {
         return res.status(400).json({ error: 'All fields are required' })
     }
-
     const sql = 'INSERT INTO messages (name, email, message) VALUES (?, ?, ?)'
     db.query(sql, [name, email, message], (err, result) => {
         if (err) {
@@ -60,7 +59,7 @@ app.post('/api/contact', (req, res) => {
 })
 
 // ===== START SERVER =====
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`)
+    console.log(`🚀 Server running on port ${PORT}`)
 })
