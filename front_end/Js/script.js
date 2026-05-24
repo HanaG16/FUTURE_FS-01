@@ -27,7 +27,7 @@ async function loadProjects() {
                 project.image.endsWith('.mov') ||
                 project.image.endsWith('.webm') ||
                 project.image.includes('drive.google.com') ||
-project.image.includes('streamable.com')
+                project.image.includes('streamable.com')
             )
 
             const mediaHTML = project.image
