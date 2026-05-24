@@ -33,7 +33,8 @@ app.get('/api/projects', (req, res) => {
     const sql = 'SELECT * FROM projects'
     db.query(sql, (err, results) => {
         if (err) {
-            res.status(500).json({ error: 'Failed to get projects' })
+            console.log('Database error:', err)
+            res.status(500).json([])
         } else {
             res.json(results)
         }

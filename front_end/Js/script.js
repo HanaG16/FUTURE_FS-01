@@ -4,6 +4,12 @@ async function loadProjects() {
         const response = await fetch('http://localhost:3000/api/projects')
         const projects = await response.json()
 
+        
+        if (!Array.isArray(projects)) {
+            console.log('Error loading projects:', projects)
+            return
+        }
+
         const container = document.getElementById('projects-container')
         container.innerHTML = ''
 
