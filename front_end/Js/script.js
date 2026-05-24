@@ -1,61 +1,73 @@
 // ===== LOAD PROJECTS FROM DATABASE =====
 async function loadProjects() {
     try {
-        const response = await fetch('http://localhost:3000/api/projects')
+        const response = await fetch('http://localhost:3000/api/projects').catch(() => null)
+        
+        if (!response) {
+            console.log('Server not available')
+            return
+        }
+
         const projects = await response.json()
+
+        if (!Array.isArray(projects)) {
+            console.log('Invalid projects data')
+            return
+        }
 
         const container = document.getElementById('projects-container')
         container.innerHTML = ''
 
-projects.forEach(project => {
-    const card = document.createElement('div')
-    card.classList.add('project-card')
-    card.style.cursor = 'pointer'
+        projects.forEach(project => {
+            const card = document.createElement('div')
+            card.classList.add('project-card')
+            card.style.cursor = 'pointer'
 
-    const isVideo = project.image && (
-        project.image.endsWith('.mp4') ||
-        project.image.endsWith('.mov') ||
-        project.image.endsWith('.webm')
-    )
+            const isVideo = project.image && (
+                project.image.endsWith('.mp4') ||
+                project.image.endsWith('.mov') ||
+                project.image.endsWith('.webm')
+            )
 
-    const mediaHTML = project.image
-        ? isVideo
-            ? `<video muted loop autoplay
-                style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:14px;">
-                <source src="${project.image}" type="video/mp4">
-               </video>`
-            : `<img src="${project.image}" alt="${project.title}"
-                style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:14px;"
-                onerror="this.style.display='none'">`
-        : `<div style="width:100%;height:160px;border-radius:8px;margin-bottom:14px;
-            background:linear-gradient(135deg,#1a0a00,#0f0f0f);
-            display:flex;align-items:center;justify-content:center;">
-            <i class="fa-solid fa-diagram-project" style="font-size:40px;color:#ff6a00;opacity:0.6;"></i>
-           </div>`
+            const mediaHTML = project.image
+                ? isVideo
+                    ? `<video muted loop autoplay
+                        style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:14px;">
+                        <source src="${project.image}" type="video/mp4">
+                       </video>`
+                    : `<img src="${project.image}" alt="${project.title}"
+                        style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:14px;"
+                        onerror="this.style.display='none'">`
+                : `<div style="width:100%;height:160px;border-radius:8px;margin-bottom:14px;
+                    background:linear-gradient(135deg,#1a0a00,#0f0f0f);
+                    display:flex;align-items:center;justify-content:center;">
+                    <i class="fa-solid fa-diagram-project" style="font-size:40px;color:#ff6a00;opacity:0.6;"></i>
+                   </div>`
 
-    card.innerHTML = `
-        ${mediaHTML}
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <i class="fa-solid fa-star" style="font-size:12px;"></i>
-            <h3 style="font-size:17px;margin:0;">${project.title}</h3>
-        </div>
-        <p style="font-size:13px;color:#888;margin-bottom:12px;line-height:1.6;">
-            ${project.description.substring(0, 85)}...
-        </p>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:11px;color:#ff6a00;">
-                <i class="fa-solid fa-wrench"></i> 
-                ${project.tech_stack || 'N/A'}
-            </span>
-            <span style="font-size:12px;color:#ff6a00;opacity:0.8;">
-                Read more →
-            </span>
-        </div>
-    `
+            card.innerHTML = `
+                ${mediaHTML}
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <i class="fa-solid fa-star" style="font-size:12px;"></i>
+                    <h3 style="font-size:17px;margin:0;">${project.title}</h3>
+                </div>
+                <p style="font-size:13px;color:#888;margin-bottom:12px;line-height:1.6;">
+                    ${project.description.substring(0, 85)}...
+                </p>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11px;color:#ff6a00;">
+                        <i class="fa-solid fa-wrench"></i>
+                        ${project.tech_stack || 'N/A'}
+                    </span>
+                    <span style="font-size:12px;color:#ff6a00;opacity:0.8;">
+                        Read more →
+                    </span>
+                </div>
+            `
 
-    card.addEventListener('click', () => openProjectModal(project))
-    container.appendChild(card)
-})
+            card.addEventListener('click', () => openProjectModal(project))
+            container.appendChild(card)
+        })
+
         animateCards()
 
     } catch (error) {
@@ -69,7 +81,6 @@ const modalClose = document.getElementById('modal-close')
 const modalTitle = document.getElementById('modal-title')
 const modalTech = document.getElementById('modal-tech')
 const modalDesc = document.getElementById('modal-desc')
-const modalImg = document.getElementById('modal-img')
 const modalLink = document.getElementById('modal-link')
 
 function openProjectModal(project) {
@@ -97,7 +108,6 @@ function openProjectModal(project) {
                     id="modal-project-img"
                     style="width:100%;height:280px;object-fit:cover;display:block;cursor:zoom-in;">`
 
-            // click image to go fullscreen
             setTimeout(() => {
                 const modalProjectImg = document.getElementById('modal-project-img')
                 if (modalProjectImg) {
@@ -118,7 +128,7 @@ function openProjectModal(project) {
             <div style="width:100%;height:200px;
                 background:linear-gradient(135deg,#1a0a00,#0f0f0f);
                 display:flex;align-items:center;justify-content:center;">
-                <i class="fa-solid fa-diagram-project" 
+                <i class="fa-solid fa-diagram-project"
                     style="font-size:50px;color:#ff6a00;opacity:0.5;"></i>
             </div>`
     }
@@ -126,6 +136,7 @@ function openProjectModal(project) {
     projectModal.classList.add('active')
     document.body.style.overflow = 'hidden'
 }
+
 function closeProjectModal() {
     projectModal.classList.remove('active')
     document.body.style.overflow = 'auto'
@@ -136,15 +147,11 @@ projectModal.addEventListener('click', (e) => {
     if (e.target === projectModal) closeProjectModal()
 })
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeProjectModal()
-})
-
 // ===== CONTACT FORM =====
 const form = document.getElementById('contact-form')
 
 form.addEventListener('submit', async function(e) {
-    e.preventDefault() // stop page from refreshing
+    e.preventDefault()
 
     const name = document.getElementById('name').value
     const email = document.getElementById('email').value
@@ -162,7 +169,7 @@ form.addEventListener('submit', async function(e) {
 
         if (result.success) {
             formMessage.textContent = '✅ Message sent successfully!'
-            form.reset() // clear the form
+            form.reset()
         } else {
             formMessage.textContent = '❌ Something went wrong. Try again.'
         }
@@ -172,28 +179,35 @@ form.addEventListener('submit', async function(e) {
     }
 })
 
-// ===== RUN ON PAGE LOAD =====
-loadProjects().then(() => {
-    animateCards()
-})
-// ===== TYPING ANIMATION ON HERO =====
+// ===== LOADING SCREEN =====
 window.addEventListener('load', () => {
+    const loader = document.getElementById('loader')
+    if (loader) {
+        loader.style.opacity = '0'
+        loader.style.display = 'none'
+    }
+
+    // typing animation starts after loader disappears
     setTimeout(() => {
         const typingText = document.querySelector('.highlight')
-        const originalName = typingText.textContent
-        typingText.textContent = ''
-
-        let i = 0
-        function typeWriter() {
-            if (i < originalName.length) {
-                typingText.textContent += originalName.charAt(i)
-                i++
-                setTimeout(typeWriter, 170)
+        if (typingText) {
+            const originalName = typingText.textContent
+            typingText.textContent = ''
+            let i = 0
+            function typeWriter() {
+                if (i < originalName.length) {
+                    typingText.textContent += originalName.charAt(i)
+                    i++
+                    setTimeout(typeWriter, 120)
+                }
             }
+            typeWriter()
         }
-        typeWriter()
-    }, 600) // waits for loader to disappear first
+    }, 300)
 })
+
+// ===== RUN ON PAGE LOAD =====
+loadProjects()
 
 // ===== FADE IN SECTIONS ON SCROLL =====
 const sections = document.querySelectorAll('section')
@@ -239,14 +253,6 @@ window.addEventListener('scroll', () => {
     })
 })
 
-// ===== LOADING SCREEN =====
-window.addEventListener('load', () => {
-    const loader = document.getElementById('loader')
-    if (loader) {
-        loader.style.opacity = '0'
-        setTimeout(() => loader.style.display = 'none', 500)
-    }
-})
 // ===== FLASHCARD SLIDESHOW =====
 const fcTrack = document.getElementById('fc-track')
 const fcCards = document.querySelectorAll('.flashcard')
@@ -258,8 +264,8 @@ const lightboxImg = document.getElementById('lightbox-img')
 const lightboxCaption = document.getElementById('lightbox-caption')
 const lightboxClose = document.getElementById('lightbox-close')
 
-const visibleCount = 4       // how many cards visible at once
-const cardWidth = 200 + 16   // card width + gap
+const visibleCount = 4
+const cardWidth = 200 + 16
 let fcCurrent = 0
 const fcTotal = fcCards.length
 const maxIndex = fcTotal - visibleCount
@@ -288,12 +294,13 @@ function goTo(index) {
 fcPrev.addEventListener('click', () => goTo(fcCurrent - 1))
 fcNext.addEventListener('click', () => goTo(fcCurrent + 1))
 
-// keyboard arrows
 document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('active')) {
-        if (e.key === 'Escape') closeLightbox()
+    if (e.key === 'Escape') {
+        closeProjectModal()
+        closeLightbox()
         return
     }
+    if (lightbox && lightbox.classList.contains('active')) return
     if (e.key === 'ArrowRight') goTo(fcCurrent + 1)
     if (e.key === 'ArrowLeft')  goTo(fcCurrent - 1)
 })
