@@ -1,6 +1,4 @@
-// ======================================================
-// GLOBAL ERROR HANDLER (MOBILE SAFE)
-// ======================================================
+
 
 window.onerror = function(message, source, lineno, colno, error) {
     console.log('ERROR:', {
@@ -12,9 +10,6 @@ window.onerror = function(message, source, lineno, colno, error) {
     })
 }
 
-// ======================================================
-// HIDE LOADER
-// ======================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader')
@@ -24,9 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })
 
-// ======================================================
-// MODAL ELEMENTS
-// ======================================================
 
 const projectModal = document.getElementById('project-modal')
 const modalClose = document.getElementById('modal-close')
@@ -34,10 +26,6 @@ const modalTitle = document.getElementById('modal-title')
 const modalTech = document.getElementById('modal-tech')
 const modalDesc = document.getElementById('modal-desc')
 const modalLink = document.getElementById('modal-link')
-
-// ======================================================
-// LOAD PROJECTS
-// ======================================================
 
 async function loadProjects() {
 
@@ -93,7 +81,7 @@ async function loadProjects() {
                 imageUrl.endsWith('.mov') ||
                 imageUrl.endsWith('.webm') ||
                 imageUrl.includes('drive.google.com') ||
-                imageUrl.includes('streamable.com')
+                
 
             let mediaHTML = ''
 
@@ -252,9 +240,6 @@ async function loadProjects() {
     }
 }
 
-// ======================================================
-// OPEN MODAL
-// ======================================================
 
 function openProjectModal(project) {
 
