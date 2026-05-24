@@ -1,4 +1,21 @@
-// ===== HIDE LOADING SCREEN IMMEDIATELY =====
+// ======================================================
+// GLOBAL ERROR HANDLER (MOBILE SAFE)
+// ======================================================
+
+window.onerror = function(message, source, lineno, colno, error) {
+    console.log('ERROR:', {
+        message,
+        source,
+        lineno,
+        colno,
+        error
+    })
+}
+
+// ======================================================
+// HIDE LOADER
+// ======================================================
+
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader')
 
@@ -7,7 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })
 
-// ===== PROJECT MODAL ELEMENTS =====
+// ======================================================
+// MODAL ELEMENTS
+// ======================================================
+
 const projectModal = document.getElementById('project-modal')
 const modalClose = document.getElementById('modal-close')
 const modalTitle = document.getElementById('modal-title')
@@ -15,34 +35,52 @@ const modalTech = document.getElementById('modal-tech')
 const modalDesc = document.getElementById('modal-desc')
 const modalLink = document.getElementById('modal-link')
 
-// ===== LOAD PROJECTS FROM DATABASE =====
+// ======================================================
+// LOAD PROJECTS
+// ======================================================
+
 async function loadProjects() {
+
     const container = document.getElementById('projects-container')
 
     if (!container) return
 
-    container.innerHTML = '<p>Loading projects...</p>'
+    container.innerHTML = `
+        <p style="text-align:center;padding:20px;">
+            Loading projects...
+        </p>
+    `
 
     try {
+
         const response = await fetch(
             'https://futurefs-01-production.up.railway.app/api/projects'
         )
 
         if (!response.ok) {
-            container.innerHTML = '<p>Could not load projects.</p>'
+            container.innerHTML = `
+                <p style="text-align:center;padding:20px;">
+                    Failed to load projects.
+                </p>
+            `
             return
         }
 
         const projects = await response.json()
 
         if (!Array.isArray(projects)) {
-            container.innerHTML = '<p>No projects found.</p>'
+            container.innerHTML = `
+                <p style="text-align:center;padding:20px;">
+                    No projects found.
+                </p>
+            `
             return
         }
 
         container.innerHTML = ''
 
         projects.forEach(project => {
+
             const card = document.createElement('div')
 
             card.classList.add('project-card')
@@ -57,67 +95,108 @@ async function loadProjects() {
                 imageUrl.includes('drive.google.com') ||
                 imageUrl.includes('streamable.com')
 
-            const mediaHTML = project.image
-                ? isVideo
-                    ? `
-                    <iframe 
-                        src="${project.image}"
+            let mediaHTML = ''
+
+            if (project.image) {
+
+                if (isVideo) {
+
+                    let embedUrl = project.image
+
+                    // Convert Google Drive links to preview links
+                    if (embedUrl.includes('drive.google.com')) {
+
+                        const match = embedUrl.match(/\/d\/(.*?)\//)
+
+                        if (match && match[1]) {
+                            embedUrl =
+                                `https://drive.google.com/file/d/${match[1]}/preview`
+                        }
+                    }
+
+                    mediaHTML = `
+                        <iframe
+                            src="${embedUrl}"
+                            style="
+                                width:100%;
+                                height:160px;
+                                border:none;
+                                border-radius:8px;
+                                margin-bottom:14px;
+                            "
+                            allowfullscreen
+                            loading="lazy">
+                        </iframe>
+                    `
+
+                } else {
+
+                    mediaHTML = `
+                        <img
+                            src="${project.image}"
+                            alt="${project.title || 'Project Image'}"
+                            loading="lazy"
+                            style="
+                                width:100%;
+                                height:160px;
+                                object-fit:cover;
+                                border-radius:8px;
+                                margin-bottom:14px;
+                            "
+                            onerror="this.style.display='none'"
+                        >
+                    `
+                }
+
+            } else {
+
+                mediaHTML = `
+                    <div
                         style="
                             width:100%;
                             height:160px;
                             border-radius:8px;
                             margin-bottom:14px;
-                            border:none;
+                            background:linear-gradient(135deg,#1a0a00,#0f0f0f);
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
                         "
-                        allowfullscreen>
-                    </iframe>
-                `
-                    : `
-                    <img 
-                        src="${project.image}" 
-                        alt="${project.title}"
-                        style="
-                            width:100%;
-                            height:160px;
-                            object-fit:cover;
-                            border-radius:8px;
-                            margin-bottom:14px;
-                        "
-                        onerror="this.style.display='none'"
                     >
+                        <i
+                            class="fa-solid fa-diagram-project"
+                            style="
+                                font-size:40px;
+                                color:#ff6a00;
+                                opacity:0.6;
+                            "
+                        ></i>
+                    </div>
                 `
-                : `
-                <div 
-                    style="
-                        width:100%;
-                        height:160px;
-                        border-radius:8px;
-                        margin-bottom:14px;
-                        background:linear-gradient(135deg,#1a0a00,#0f0f0f);
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                    "
-                >
-                    <i 
-                        class="fa-solid fa-diagram-project"
-                        style="font-size:40px;color:#ff6a00;opacity:0.6;"
-                    ></i>
-                </div>
-            `
+            }
 
             card.innerHTML = `
                 ${mediaHTML}
 
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                    <i class="fa-solid fa-star" style="font-size:12px;"></i>
+                <div
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:8px;
+                        margin-bottom:8px;
+                    "
+                >
+                    <i
+                        class="fa-solid fa-star"
+                        style="font-size:12px;"
+                    ></i>
 
                     <h3 style="font-size:17px;margin:0;">
                         ${project.title || 'Untitled Project'}
                     </h3>
                 </div>
 
-                <p 
+                <p
                     style="
                         font-size:13px;
                         color:#888;
@@ -128,13 +207,25 @@ async function loadProjects() {
                     ${(project.description || '').substring(0, 85)}...
                 </p>
 
-                <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                    "
+                >
                     <span style="font-size:11px;color:#ff6a00;">
                         <i class="fa-solid fa-wrench"></i>
                         ${project.tech_stack || 'N/A'}
                     </span>
 
-                    <span style="font-size:12px;color:#ff6a00;opacity:0.8;">
+                    <span
+                        style="
+                            font-size:12px;
+                            color:#ff6a00;
+                            opacity:0.8;
+                        "
+                    >
                         Read more →
                     </span>
                 </div>
@@ -150,90 +241,124 @@ async function loadProjects() {
         animateCards()
 
     } catch (error) {
-        console.log('Server not available:', error)
-        container.innerHTML = '<p>Could not connect to server.</p>'
+
+        console.log(error)
+
+        container.innerHTML = `
+            <p style="text-align:center;padding:20px;">
+                Could not connect to server.
+            </p>
+        `
     }
 }
 
-// ===== OPEN PROJECT MODAL =====
+// ======================================================
+// OPEN MODAL
+// ======================================================
+
 function openProjectModal(project) {
+
     if (!projectModal) return
 
-    modalTitle.textContent = project.title || 'Untitled'
-    modalTech.textContent = project.tech_stack || ''
-    modalDesc.textContent = project.description || ''
-    modalLink.href = project.link || '#'
+    if (modalTitle) {
+        modalTitle.textContent = project.title || 'Untitled'
+    }
+
+    if (modalTech) {
+        modalTech.textContent = project.tech_stack || ''
+    }
+
+    if (modalDesc) {
+        modalDesc.textContent = project.description || ''
+    }
+
+    if (modalLink) {
+        modalLink.href = project.link || '#'
+    }
 
     const mediaContainer = document.getElementById('modal-media')
 
     if (!mediaContainer) return
 
-    if (project.image) {
-        const imageUrl = project.image.toLowerCase()
+    const imageUrl = (project.image || '').toLowerCase()
 
-        const isVideo =
-            imageUrl.endsWith('.mp4') ||
-            imageUrl.endsWith('.mov') ||
-            imageUrl.endsWith('.webm') ||
-            imageUrl.includes('drive.google.com') ||
-            imageUrl.includes('streamable.com')
+    const isVideo =
+        imageUrl.endsWith('.mp4') ||
+        imageUrl.endsWith('.mov') ||
+        imageUrl.endsWith('.webm') ||
+        imageUrl.includes('drive.google.com') ||
+        imageUrl.includes('streamable.com')
+
+    if (project.image) {
 
         if (isVideo) {
+
+            let embedUrl = project.image
+
+            if (embedUrl.includes('drive.google.com')) {
+
+                const match = embedUrl.match(/\/d\/(.*?)\//)
+
+                if (match && match[1]) {
+                    embedUrl =
+                        `https://drive.google.com/file/d/${match[1]}/preview`
+                }
+            }
+
             mediaContainer.innerHTML = `
-                <div 
+                <iframe
+                    src="${embedUrl}"
                     style="
                         width:100%;
                         height:280px;
+                        border:none;
                         border-radius:8px;
-                        overflow:hidden;
                     "
-                >
-                    <iframe 
-                        src="${project.image}"
-                        style="
-                            width:100%;
-                            height:100%;
-                            border:none;
-                            display:block;
-                        "
-                        allowfullscreen>
-                    </iframe>
-                </div>
+                    allowfullscreen>
+                </iframe>
             `
+
         } else {
+
             mediaContainer.innerHTML = `
-                <img 
-                    src="${project.image}" 
-                    alt="${project.title}"
+                <img
+                    src="${project.image}"
+                    alt="${project.title || 'Project Image'}"
                     id="modal-project-img"
                     style="
                         width:100%;
                         height:280px;
                         object-fit:cover;
-                        display:block;
-                        cursor:zoom-in;
+                        border-radius:8px;
+                        cursor:pointer;
                     "
                 >
             `
 
             setTimeout(() => {
+
                 const modalProjectImg =
                     document.getElementById('modal-project-img')
 
-                if (modalProjectImg) {
-                    modalProjectImg.addEventListener('click', () => {
-                        if (modalProjectImg.requestFullscreen) {
-                            modalProjectImg.requestFullscreen()
-                        } else if (modalProjectImg.webkitRequestFullscreen) {
-                            modalProjectImg.webkitRequestFullscreen()
-                        }
-                    })
-                }
+                if (!modalProjectImg) return
+
+                modalProjectImg.addEventListener('click', () => {
+
+                    if (
+                        document.fullscreenEnabled &&
+                        modalProjectImg.requestFullscreen
+                    ) {
+                        modalProjectImg.requestFullscreen()
+                    }
+                })
+
             }, 100)
         }
+
     } else {
+
         mediaContainer.innerHTML = `
-            <div 
+            <div
                 style="
                     width:100%;
                     height:200px;
@@ -241,11 +366,16 @@ function openProjectModal(project) {
                     display:flex;
                     align-items:center;
                     justify-content:center;
+                    border-radius:8px;
                 "
             >
-                <i 
+                <i
                     class="fa-solid fa-diagram-project"
-                    style="font-size:50px;color:#ff6a00;opacity:0.5;"
+                    style="
+                        font-size:50px;
+                        color:#ff6a00;
+                        opacity:0.5;
+                    "
                 ></i>
             </div>
         `
@@ -255,8 +385,12 @@ function openProjectModal(project) {
     document.body.style.overflow = 'hidden'
 }
 
-// ===== CLOSE PROJECT MODAL =====
+// ======================================================
+// CLOSE MODAL
+// ======================================================
+
 function closeProjectModal() {
+
     if (!projectModal) return
 
     projectModal.classList.remove('active')
@@ -268,27 +402,41 @@ if (modalClose) {
 }
 
 if (projectModal) {
+
     projectModal.addEventListener('click', (e) => {
+
         if (e.target === projectModal) {
             closeProjectModal()
         }
     })
 }
 
-// ===== CONTACT FORM =====
+// ======================================================
+// CONTACT FORM
+// ======================================================
+
 const form = document.getElementById('contact-form')
 
 if (form) {
-    form.addEventListener('submit', async function (e) {
+
+    form.addEventListener('submit', async function(e) {
+
         e.preventDefault()
 
-        const name = document.getElementById('name')?.value || ''
-        const email = document.getElementById('email')?.value || ''
-        const message = document.getElementById('message')?.value || ''
+        const name =
+            document.getElementById('name')?.value || ''
 
-        const formMessage = document.getElementById('form-message')
+        const email =
+            document.getElementById('email')?.value || ''
+
+        const message =
+            document.getElementById('message')?.value || ''
+
+        const formMessage =
+            document.getElementById('form-message')
 
         try {
+
             const response = await fetch(
                 'https://futurefs-01-production.up.railway.app/api/contact',
                 {
@@ -307,20 +455,24 @@ if (form) {
             const result = await response.json()
 
             if (result.success) {
+
                 if (formMessage) {
                     formMessage.textContent =
                         '✅ Message sent successfully!'
                 }
 
                 form.reset()
+
             } else {
+
                 if (formMessage) {
                     formMessage.textContent =
-                        '❌ Something went wrong. Try again.'
+                        '❌ Something went wrong.'
                 }
             }
 
         } catch (error) {
+
             if (formMessage) {
                 formMessage.textContent =
                     '❌ Could not connect to server.'
@@ -329,44 +481,64 @@ if (form) {
     })
 }
 
-// ===== TYPING ANIMATION =====
+// ======================================================
+// TYPING EFFECT
+// ======================================================
+
 window.addEventListener('load', () => {
+
     setTimeout(() => {
-        const typingText = document.querySelector('.highlight')
 
-        if (typingText) {
-            const originalName = typingText.textContent
+        const typingText =
+            document.querySelector('.highlight')
 
-            typingText.textContent = ''
+        if (!typingText) return
 
-            let i = 0
+        const originalName = typingText.textContent
 
-            function typeWriter() {
-                if (i < originalName.length) {
-                    typingText.textContent += originalName.charAt(i)
-                    i++
+        typingText.textContent = ''
 
-                    setTimeout(typeWriter, 120)
-                }
+        let i = 0
+
+        function typeWriter() {
+
+            if (i < originalName.length) {
+
+                typingText.textContent +=
+                    originalName.charAt(i)
+
+                i++
+
+                setTimeout(typeWriter, 120)
             }
-
-            typeWriter()
         }
+
+        typeWriter()
+
     }, 300)
 })
 
-// ===== RUN PROJECT LOAD =====
+// ======================================================
+// LOAD PROJECTS
+// ======================================================
+
 loadProjects()
 
-// ===== FADE IN SECTIONS ON SCROLL =====
+// ======================================================
+// FADE-IN SECTIONS
+// ======================================================
+
 const sections = document.querySelectorAll('section')
 
 const observer = new IntersectionObserver((entries) => {
+
     entries.forEach(entry => {
+
         if (entry.isIntersecting) {
             entry.target.classList.add('visible')
         }
     })
+
 }, {
     threshold: 0.1
 })
@@ -375,24 +547,39 @@ sections.forEach(section => {
     observer.observe(section)
 })
 
-// ===== PROJECT CARD ANIMATION =====
+// ======================================================
+// CARD ANIMATION
+// ======================================================
+
 function animateCards() {
-    const cards = document.querySelectorAll('.project-card')
+
+    const cards =
+        document.querySelectorAll('.project-card')
 
     cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.15}s`
+
+        card.style.animationDelay =
+            `${index * 0.15}s`
+
         card.classList.add('card-animate')
     })
 }
 
-// ===== ACTIVE NAVIGATION LINK =====
-const navLinks = document.querySelectorAll('nav ul li a')
+// ======================================================
+// ACTIVE NAVIGATION
+// ======================================================
+
+const navLinks =
+    document.querySelectorAll('nav ul li a')
 
 window.addEventListener('scroll', () => {
+
     let current = ''
 
     sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100
+
+        const sectionTop =
+            section.offsetTop - 100
 
         if (window.scrollY >= sectionTop) {
             current = section.getAttribute('id')
@@ -400,36 +587,66 @@ window.addEventListener('scroll', () => {
     })
 
     navLinks.forEach(link => {
+
         link.classList.remove('active')
 
-        if (link.getAttribute('href') === `#${current}`) {
+        if (
+            link.getAttribute('href') === `#${current}`
+        ) {
             link.classList.add('active')
         }
     })
 })
 
-// ===== FLASHCARD SLIDESHOW =====
-const fcTrack = document.getElementById('fc-track')
-const fcCards = document.querySelectorAll('.flashcard')
-const fcDotsContainer = document.getElementById('fc-dots')
-const fcPrev = document.getElementById('fc-prev')
-const fcNext = document.getElementById('fc-next')
+// ======================================================
+// FLASHCARD SLIDESHOW
+// ======================================================
 
-const lightbox = document.getElementById('lightbox')
-const lightboxImg = document.getElementById('lightbox-img')
-const lightboxCaption = document.getElementById('lightbox-caption')
-const lightboxClose = document.getElementById('lightbox-close')
+const fcTrack =
+    document.getElementById('fc-track')
+
+const fcCards =
+    document.querySelectorAll('.flashcard')
+
+const fcDotsContainer =
+    document.getElementById('fc-dots')
+
+const fcPrev =
+    document.getElementById('fc-prev')
+
+const fcNext =
+    document.getElementById('fc-next')
+
+const lightbox =
+    document.getElementById('lightbox')
+
+const lightboxImg =
+    document.getElementById('lightbox-img')
+
+const lightboxCaption =
+    document.getElementById('lightbox-caption')
+
+const lightboxClose =
+    document.getElementById('lightbox-close')
 
 const visibleCount = 4
 const cardWidth = 216
 
 let fcCurrent = 0
-const fcTotal = fcCards.length
-const maxIndex = Math.max(0, fcTotal - visibleCount)
 
-// ===== CREATE DOTS =====
+const fcTotal = fcCards.length
+
+const maxIndex =
+    Math.max(0, fcTotal - visibleCount)
+
+// ======================================================
+// CREATE DOTS
+// ======================================================
+
 if (fcDotsContainer) {
+
     for (let i = 0; i <= maxIndex; i++) {
+
         const dot = document.createElement('div')
 
         dot.classList.add('fc-dot')
@@ -438,24 +655,40 @@ if (fcDotsContainer) {
             dot.classList.add('active')
         }
 
-        dot.addEventListener('click', () => goTo(i))
+        dot.addEventListener('click', () => {
+            goTo(i)
+        })
 
         fcDotsContainer.appendChild(dot)
     }
 }
 
-// ===== UPDATE DOTS =====
+// ======================================================
+// UPDATE DOTS
+// ======================================================
+
 function updateDots() {
-    document.querySelectorAll('.fc-dot').forEach((dot, i) => {
-        dot.classList.toggle('active', i === fcCurrent)
-    })
+
+    document.querySelectorAll('.fc-dot')
+        .forEach((dot, i) => {
+
+            dot.classList.toggle(
+                'active',
+                i === fcCurrent
+            )
+        })
 }
 
-// ===== GO TO SLIDE =====
+// ======================================================
+// GO TO SLIDE
+// ======================================================
+
 function goTo(index) {
+
     if (!fcTrack) return
 
-    fcCurrent = Math.max(0, Math.min(index, maxIndex))
+    fcCurrent =
+        Math.max(0, Math.min(index, maxIndex))
 
     fcTrack.style.transform =
         `translateX(-${fcCurrent * cardWidth}px)`
@@ -463,8 +696,12 @@ function goTo(index) {
     updateDots()
 }
 
-// ===== BUTTON EVENTS =====
+// ======================================================
+// BUTTONS
+// ======================================================
+
 if (fcPrev && fcNext && fcTrack) {
+
     fcPrev.addEventListener('click', () => {
         goTo(fcCurrent - 1)
     })
@@ -474,15 +711,24 @@ if (fcPrev && fcNext && fcTrack) {
     })
 }
 
-// ===== KEYBOARD CONTROLS =====
+// ======================================================
+// KEYBOARD
+// ======================================================
+
 document.addEventListener('keydown', (e) => {
+
     if (e.key === 'Escape') {
+
         closeProjectModal()
         closeLightbox()
+
         return
     }
 
-    if (lightbox && lightbox.classList.contains('active')) {
+    if (
+        lightbox &&
+        lightbox.classList.contains('active')
+    ) {
         return
     }
 
@@ -495,11 +741,20 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-// ===== OPEN LIGHTBOX =====
+// ======================================================
+// LIGHTBOX
+// ======================================================
+
 function openLightbox(img, caption) {
-    if (!lightbox || !lightboxImg || !lightboxCaption) return
+
+    if (
+        !lightbox ||
+        !lightboxImg ||
+        !lightboxCaption
+    ) return
 
     lightboxImg.src = img.src
+
     lightboxCaption.textContent = caption
 
     lightbox.classList.add('active')
@@ -507,8 +762,8 @@ function openLightbox(img, caption) {
     document.body.style.overflow = 'hidden'
 }
 
-// ===== CLOSE LIGHTBOX =====
 function closeLightbox() {
+
     if (!lightbox) return
 
     lightbox.classList.remove('active')
@@ -516,13 +771,16 @@ function closeLightbox() {
     document.body.style.overflow = 'auto'
 }
 
-// ===== FLASHCARD CLICK =====
 fcCards.forEach(card => {
+
     card.addEventListener('click', () => {
+
         const img = card.querySelector('img')
 
         const caption =
-            card.querySelector('.flashcard-caption')?.textContent.trim() || ''
+            card.querySelector('.flashcard-caption')
+            ?.textContent
+            ?.trim() || ''
 
         if (img) {
             openLightbox(img, caption)
@@ -530,13 +788,18 @@ fcCards.forEach(card => {
     })
 })
 
-// ===== LIGHTBOX EVENTS =====
 if (lightboxClose) {
-    lightboxClose.addEventListener('click', closeLightbox)
+
+    lightboxClose.addEventListener(
+        'click',
+        closeLightbox
+    )
 }
 
 if (lightbox) {
+
     lightbox.addEventListener('click', (e) => {
+
         if (e.target === lightbox) {
             closeLightbox()
         }
