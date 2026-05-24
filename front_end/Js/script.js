@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===== LOAD PROJECTS FROM DATABASE =====
 async function loadProjects() {
     try {
-        const response = await fetch('http://localhost:3000/api/projects')
+        const response = await fetch('https://futurefs-01-production.up.railway.app/api/projects')
         if (!response.ok) return
         const projects = await response.json()
         if (!Array.isArray(projects)) return
@@ -154,7 +154,7 @@ form.addEventListener('submit', async function(e) {
     const formMessage = document.getElementById('form-message')
 
     try {
-        const response = await fetch('http://localhost:3000/api/contact', {
+        const response = await fetch('https://futurefs-01-production.up.railway.app/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, message })
