@@ -99,11 +99,12 @@ function openProjectModal(project) {
 
         if (isVideo) {
             mediaContainer.innerHTML = `
-                <iframe src="${project.image}"
-                    width="100%" height="280"
-                    frameborder="0" allowfullscreen
-                    style="display:block; border-radius:8px; border:none;">
-                </iframe>`
+                
+             ? `<div style="width:100%;height:160px;border-radius:8px;margin-bottom:14px;overflow:hidden;">
+                 <iframe src="${project.image}"
+                 style="width:100%;height:100%;border:none;display:block;"
+                 allowfullscreen></iframe>
+   </div>`
         } else {
             mediaContainer.innerHTML = `
                 <img src="${project.image}" alt="${project.title}"
