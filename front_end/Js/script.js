@@ -1,25 +1,18 @@
+// ===== HIDE LOADING SCREEN IMMEDIATELY =====
+document.addEventListener('DOMContentLoaded', () => {
+    const loader = document.getElementById('loader')
+    if (loader) {
+        loader.style.display = 'none'
+    }
+})
+
 // ===== LOAD PROJECTS FROM DATABASE =====
 async function loadProjects() {
     try {
-        const response = await fetch('http://localhost:3000/api/projects').catch(() => null)
-        
-        if (!response) {
-            console.log('Server not available')
-            return
-        }
-
+        const response = await fetch('http://localhost:3000/api/projects')
+        if (!response.ok) return
         const projects = await response.json()
-
-<<<<<<< HEAD
-        
-        if (!Array.isArray(projects)) {
-            console.log('Error loading projects:', projects)
-=======
-        if (!Array.isArray(projects)) {
-            console.log('Invalid projects data')
->>>>>>> 504accace8cd686d73f8b32d67b4045209426d3d
-            return
-        }
+        if (!Array.isArray(projects)) return
 
         const container = document.getElementById('projects-container')
         container.innerHTML = ''
@@ -69,7 +62,6 @@ async function loadProjects() {
                     </span>
                 </div>
             `
-
             card.addEventListener('click', () => openProjectModal(project))
             container.appendChild(card)
         })
@@ -77,7 +69,7 @@ async function loadProjects() {
         animateCards()
 
     } catch (error) {
-        console.log('Error loading projects:', error)
+        console.log('Server not available:', error)
     }
 }
 
@@ -105,7 +97,7 @@ function openProjectModal(project) {
         if (isVideo) {
             mediaContainer.innerHTML = `
                 <video controls autoplay muted loop
-                    style="width:100%;height:280px;object-fit:cover;display:block;cursor:default;">
+                    style="width:100%;height:280px;object-fit:cover;display:block;">
                     <source src="${project.image}" type="video/mp4">
                 </video>`
         } else {
@@ -122,8 +114,6 @@ function openProjectModal(project) {
                             modalProjectImg.requestFullscreen()
                         } else if (modalProjectImg.webkitRequestFullscreen) {
                             modalProjectImg.webkitRequestFullscreen()
-                        } else if (modalProjectImg.msRequestFullscreen) {
-                            modalProjectImg.msRequestFullscreen()
                         }
                     })
                 }
@@ -158,7 +148,6 @@ const form = document.getElementById('contact-form')
 
 form.addEventListener('submit', async function(e) {
     e.preventDefault()
-
     const name = document.getElementById('name').value
     const email = document.getElementById('email').value
     const message = document.getElementById('message').value
@@ -170,30 +159,20 @@ form.addEventListener('submit', async function(e) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, message })
         })
-
         const result = await response.json()
-
         if (result.success) {
             formMessage.textContent = '✅ Message sent successfully!'
             form.reset()
         } else {
             formMessage.textContent = '❌ Something went wrong. Try again.'
         }
-
     } catch (error) {
         formMessage.textContent = '❌ Could not connect to server.'
     }
 })
 
-// ===== LOADING SCREEN =====
+// ===== TYPING ANIMATION =====
 window.addEventListener('load', () => {
-    const loader = document.getElementById('loader')
-    if (loader) {
-        loader.style.opacity = '0'
-        loader.style.display = 'none'
-    }
-
-    // typing animation starts after loader disappears
     setTimeout(() => {
         const typingText = document.querySelector('.highlight')
         if (typingText) {
@@ -217,7 +196,6 @@ loadProjects()
 
 // ===== FADE IN SECTIONS ON SCROLL =====
 const sections = document.querySelectorAll('section')
-
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -225,10 +203,7 @@ const observer = new IntersectionObserver((entries) => {
         }
     })
 }, { threshold: 0.1 })
-
-sections.forEach(section => {
-    observer.observe(section)
-})
+sections.forEach(section => observer.observe(section))
 
 // ===== PROJECT CARDS STAGGER ANIMATION =====
 function animateCards() {
@@ -239,9 +214,8 @@ function animateCards() {
     })
 }
 
-// ===== SMOOTH ACTIVE NAV LINK ON SCROLL =====
+// ===== ACTIVE NAV LINK ON SCROLL =====
 const navLinks = document.querySelectorAll('nav ul li a')
-
 window.addEventListener('scroll', () => {
     let current = ''
     sections.forEach(section => {
@@ -250,7 +224,6 @@ window.addEventListener('scroll', () => {
             current = section.getAttribute('id')
         }
     })
-
     navLinks.forEach(link => {
         link.classList.remove('active')
         if (link.getAttribute('href') === `#${current}`) {
@@ -276,7 +249,6 @@ let fcCurrent = 0
 const fcTotal = fcCards.length
 const maxIndex = fcTotal - visibleCount
 
-// create dots
 for (let i = 0; i <= maxIndex; i++) {
     const dot = document.createElement('div')
     dot.classList.add('fc-dot')
@@ -308,10 +280,9 @@ document.addEventListener('keydown', (e) => {
     }
     if (lightbox && lightbox.classList.contains('active')) return
     if (e.key === 'ArrowRight') goTo(fcCurrent + 1)
-    if (e.key === 'ArrowLeft')  goTo(fcCurrent - 1)
+    if (e.key === 'ArrowLeft') goTo(fcCurrent - 1)
 })
 
-// ===== LIGHTBOX =====
 function openLightbox(img, caption) {
     lightboxImg.src = img.src
     lightboxCaption.textContent = caption
