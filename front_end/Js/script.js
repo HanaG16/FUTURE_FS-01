@@ -26,7 +26,8 @@ async function loadProjects() {
                 project.image.endsWith('.mp4') ||
                 project.image.endsWith('.mov') ||
                 project.image.endsWith('.webm') ||
-                project.image.includes('drive.google.com')
+                project.image.includes('drive.google.com') ||
+project.image.includes('streamable.com')
             )
 
             const mediaHTML = project.image
